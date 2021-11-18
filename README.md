@@ -1,7 +1,7 @@
-# Point-to_point Communication
+# Point-to-point Communication
 
-We are interested in the point to point communication in the 'linear network model topology' using openmpi.
+We are interested in the point to point communication in the `linear network model topology` using openmpi.
 
-For this purpuse, we will implement 'blocking Send and non-blocking send'.  
+For this purpuse, we will implement `blocking Send and non-blocking send`.  
 
  
