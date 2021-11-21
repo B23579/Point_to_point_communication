@@ -22,25 +22,7 @@ int main(int argc,char *argv[]){
 	if(rank %2==0){
 
 		
-		MPI_Irecv(&buf[1],1,MPI_INT,next,tag2,MPI_COMM_WORLD,&reqs[1]);
-
-		MPI_Isend(&msgleft,1,MPI_INT,prev,tag2,MPI_COMM_WORLD,&reqs[2]);
 		
-		// post non blocking receives and sends for neighbord
-		MPI_Irecv(&buf[0],1,MPI_INT,prev, tag1,MPI_COMM_WORLD, &reqs[0]);
-	
-		MPI_Isend(&msgright,1,MPI_INT,next,tag1,MPI_COMM_WORLD,&reqs[3]);
-	
-		// wait for all non-blocking operations to complete
-
-		MPI_Waitall(4, reqs, stats);
-		msgright= buf[0];
-		msgleft = buf[1];
-		//buf[0]= buf[0] + rank;
-		//buf[1] = buf[1] - rank;
-		my = buf[0];
-		std::cout<< "Proces ID " << rank << " my message is "<< my <<std::endl;
-
 		while(my != rank) {
 		
 		MPI_Irecv(&buf[1],1,MPI_INT,next,tag2,MPI_COMM_WORLD,&reqs[1]);
@@ -48,10 +30,10 @@ int main(int argc,char *argv[]){
 		MPI_Isend(&msgleft,1,MPI_INT,prev,tag2,MPI_COMM_WORLD,&reqs[2]);
 		
 		// post non blocking receives and sends for neighbord
-		MPI_Irecv(&buf[0],1,MPI_INT,prev, tag1,MPI_COMM_WORLD, &reqs[0]);
+	
 	
 		MPI_Isend(&msgright,1,MPI_INT,next,tag1,MPI_COMM_WORLD,&reqs[3]);
-	
+		MPI_Irecv(&buf[0],1,MPI_INT,prev, tag1,MPI_COMM_WORLD, &reqs[0]);
 		// wait for all non-blocking operations to complete
 
 		MPI_Waitall(4, reqs, stats);
@@ -79,26 +61,7 @@ int main(int argc,char *argv[]){
 		}
 	else
 	{
-		MPI_Isend(&msgleft,1,MPI_INT,prev,tag2,MPI_COMM_WORLD,&reqs[2]);
-		MPI_Irecv(&buf[1],1,MPI_INT,next,tag2,MPI_COMM_WORLD,&reqs[1]);
 		
-	
-			
-		// post non blocking receives and sends for neighbord
-			
-		MPI_Isend(&msgright,1,MPI_INT,next,tag1,MPI_COMM_WORLD,&reqs[3]);
-		MPI_Irecv(&buf[0],1,MPI_INT,prev, tag1,MPI_COMM_WORLD, &reqs[0]);
-	
-		// wait for all non-blocking operations to complete
-
-		MPI_Waitall(4, reqs, stats);
-		buf[0]= buf[0] + rank;
-		buf[1] = buf[1] - rank;
-		my = buf[1];
-		std::cout<< "Process ID " <<rank << " my message is " << my << std::endl;
-		msgright = buf[0];
-		msgleft = buf[1];		
-
 		while(my !=rank){
 		MPI_Isend(&msgleft,1,MPI_INT,prev,tag2,MPI_COMM_WORLD,&reqs[2]);
 		MPI_Irecv(&buf[1],1,MPI_INT,next,tag2,MPI_COMM_WORLD,&reqs[1]);
