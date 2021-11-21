@@ -15,7 +15,7 @@ int main(int argc,char *argv[]){
 	prev = rank -1;
 	next = rank + 1;
 
-	int msgleft = -rank, msgright = rank;
+	int msgleft = rank, msgright = -rank;
 
 	if(rank==0) prev= numtasks-1;
 	if(rank== (numtasks-1)) next = 0;
@@ -35,13 +35,13 @@ int main(int argc,char *argv[]){
 
 			MPI_Recv(&buf[0],1,MPI_INT,next,itag_rec_next,MPI_COMM_WORLD,&stats[0]); // buf[0] -> msgleft
 
-			MPI_Send(&msgright,1,MPI_INT,prev,itag_rank,MPI_COMM_WORLD);
+			MPI_Send(&msgleft,1,MPI_INT,prev,itag_rank,MPI_COMM_WORLD);
 		
 		// post non blocking receives and sends for neighbord
 
 			MPI_Recv(&buf[1],1,MPI_INT,prev, itag_rec_prev,MPI_COMM_WORLD, &stats[1]); //buf[1] -> msgright
 	
-			MPI_Send(&msgleft,1,MPI_INT,next,itag_rank,MPI_COMM_WORLD);
+			MPI_Send(&msgright ,1,MPI_INT,next,itag_rank,MPI_COMM_WORLD);
 
 	// The message receive from the next process become the message to send  to the previous process,inversely. 
 			msgleft =  buf[0];
