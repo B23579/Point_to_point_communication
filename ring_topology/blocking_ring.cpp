@@ -70,7 +70,8 @@ int main(int argc,char *argv[]){
 
 			msgleft=buf[0];
 			msgright= buf[1];
-			cond= msgleft;
+			cond= msgleft; // this is due the fact that the left message is initialy the rank of the corresponding process
+				// so, at the end of the ring, he should received it rank.  
 		}
 
 			std::cout<<" My msgright is " <<  msgright << " and my msgleft is " << msgleft << ". My rank is " << rank  <<std::endl;
