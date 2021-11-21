@@ -47,7 +47,7 @@ int main(int argc,char *argv[]){
 			msgleft =  buf[0];
 			msgright = buf[1];	
 
-			cond =-1*msgleft*msgright;
+			cond =msgleft;
 		}
 	
 		std::cout<<" My msgright is " <<  msgright << " and my msgleft is " << msgleft << ". My rank is " << rank  <<std::endl;
@@ -70,7 +70,7 @@ int main(int argc,char *argv[]){
 
 			msgleft=buf[0];
 			msgright= buf[1];
-			cond= -1*msgright*msgleft;
+			cond= msgleft;
 		}
 
 			std::cout<<" My msgright is " <<  msgright << " and my msgleft is " << msgleft << ". My rank is " << rank  <<std::endl;
