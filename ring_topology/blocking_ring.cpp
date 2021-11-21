@@ -2,6 +2,9 @@
 #include<mpi.h>
 
 int main(int argc,char *argv[]){
+
+			//" This program use a blocking communication \n" ;
+
 	int numtasks,rank,next, prev, buf[2]={100,100}, itag_rank=1, itag_rec_prev=2, itag_rec_next=2;
 
 	MPI_Status stats[2]; // 
@@ -15,7 +18,9 @@ int main(int argc,char *argv[]){
 	prev = rank -1;
 	next = rank + 1;
 
-	int msgleft = rank, msgright = -rank;
+	int msgleft = rank, msgright = -rank,sum=0, count=0; // sum collect the  the sum of the
+		// rank and the receiving message at each step of the process.compt will compt the number of messages receive
+		// for each process.   
 
 	if(rank==0) prev= numtasks-1;
 	if(rank== (numtasks-1)) next = 0;
@@ -26,6 +31,7 @@ int main(int argc,char *argv[]){
 	itag_rank = rank*10;
 	itag_rec_prev= prev*10;
 	itag_rec_next = next*10;
+
 
 	
 	if(rank %2==0){ // this condition is used to avoid deadlock. at the begining 
@@ -46,11 +52,18 @@ int main(int argc,char *argv[]){
 	// The message receive from the next process become the message to send  to the previous process,inversely. 
 			msgleft =  buf[0];
 			msgright = buf[1];	
+			
+			sum = rank + msgleft + msgright;
+			count += 2 ; // because at each step, process p receive message from right and left.  
 
 			cond =msgleft;
 		}
 	
-		std::cout<<" My msgright is " <<  msgright << " and my msgleft is " << msgleft << ". My rank is " << rank  <<std::endl;
+		
+	std::cout<<" I am process " << rank <<" and I have received " << count << " messages. " << " My final messages have tag  " << itag_rank;
+	std::cout <<" .My final msgleft and msgright are "<< msgleft << " and " << msgright <<std::endl;
+	std::cout << std::endl;
+
 	}
 	else
 	{	
@@ -71,9 +84,13 @@ int main(int argc,char *argv[]){
 			msgleft=buf[0];
 			msgright= buf[1];
 			cond= msgleft;
+			sum = msgleft + msgright + rank;
+			count += 2;
 		}
 
-			std::cout<<" My msgright is " <<  msgright << " and my msgleft is " << msgleft << ". My rank is " << rank  <<std::endl;
+	std::cout<<" I am process " << rank <<" and I have received " << count << " messages. " << " My final messages have tag " << itag_rank;
+	std::cout <<" .My final msgleft and msgright are "<< msgleft<< " and "<< msgright <<std::endl;
+	std::cout << std::endl;
 	}
 	
 
