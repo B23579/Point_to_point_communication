@@ -18,7 +18,7 @@ int main(int argc,char *argv[]){
 	MPI_Comm_size(MPI_COMM_WORLD,&numtasks);
 	MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 	
-	double starttime, endtime;
+	double starttime, endtime, mean=0;
 	//determine the right and left neighbors
 
 	prev = rank -1;
@@ -30,9 +30,12 @@ int main(int argc,char *argv[]){
 
 	if(rank==0) prev= numtasks-1;
 	if(rank== (numtasks-1)) next = 0;
+	
+	int N = 20;// number of iteration to get a walltime mean 
 
-	for(int i = 0; i< 18; i++)
+	for(int i = 0; i< N; i++)
 	{
+
 	starttime = MPI_Wtime();
 
 	int cond=1000; // in the cluster, we are allow to use 24 processes, using this number, we are sure 
@@ -65,15 +68,15 @@ int main(int argc,char *argv[]){
 			msgright = buf[1];	
 			
 			sum = rank + msgleft + msgright;
-			count += 2 ; // because at each step, process p receive message from right and left.  
+			count= count+ 2 ; // because at each step, process p receive message from right and left.  
 
 			cond =msgleft;
 		}
 		
-	std::cout<<" I am process " << rank <<" and I have received " << count << " messages. " << " My final messages have tag  " << itag_rank;
-	std::cout <<" .My final msgleft and msgright are "<< msgleft << " and " << msgright <<std::endl;
+//	std::cout<<" I am process " << rank <<" and I have received " << count << " messages. " << " My final messages have tag  " << itag_rank;
+//	std::cout <<" .My final msgleft and msgright are "<< msgleft << " and " << msgright <<std::endl;
 	
-	std::cout << std::endl;
+//	std::cout << std::endl;
 
 	}
 	else
@@ -96,25 +99,23 @@ int main(int argc,char *argv[]){
 			msgright= buf[1];
 			cond= msgleft;
 			sum = msgleft + msgright + rank;
-			count += 2;
+			count= count+ 2;
 		}
+	}
+
+	endtime = MPI_Wtime();
+
+	mean = mean + (endtime-starttime);
+	
+	}// iteration
+
 
 	std::cout<<" I am process " << rank <<" and I have received " << count << " messages. " << " My final messages have tag " << itag_rank;
 	std::cout <<" .My final msgleft and msgright are "<< msgleft<< " and "<< msgright <<std::endl;
 	std::cout << std::endl;
-	}
-	
-
-
-
-	endtime = MPI_Wtime();
-	walltime.push_back(endtime-starttime);
-
-	}
-
 	MPI_Finalize();	
 	
 
 
-	std::cout<<"Process ID " << rank <<" .My walltime is  "<< walltime[0]<<" Done..."<<std::endl;
+	std::cout<<"Process ID " << rank <<" .My walltime is  "<< mean/N<<" Done..."<<std::endl;
 }
